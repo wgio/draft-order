@@ -1,25 +1,25 @@
 const marbleTeams = [
-  "Balls of Chaos \t",
-  "Black Jacks ",
-  "Bumblebees \t",
-  "Chocolatiers \t",
-  "Crazy Cat's Eyes \t",
-  "Gliding Glaciers \t",
-  "Green Ducks \t",
-  "Hazers \t",
-  "Kobalts \t",
-  "O'rangers \t",
-  "Pinkies \t",
-  "Raspberry Racers \t",
-  "Savage Speeders \t",
-  "Shining Swarm \t",
-  "Team Galactic \t",
-  "Team Momo \t",
-  "Team Plasma \t",
-  "Team Primary \t",
-  "Thunderbolts ",
-  "Wolfpack ",
-].map((t) => t.trim());
+  "Balls of Chaos",
+  "Black Jacks",
+  "Bumblebees",
+  "Chocolatiers",
+  "Crazy Cat's Eyes",
+  "Gliding Glaciers",
+  "Green Ducks",
+  "Hazers",
+  "Kobalts",
+  "O'rangers",
+  "Pinkies",
+  "Raspberry Racers",
+  "Savage Speeders",
+  "Shining Swarm",
+  "Team Galactic",
+  "Team Momo",
+  "Team Plasma",
+  "Team Primary",
+  "Thunderbolts",
+  "Wolfpack",
+];
 
 const teams = [
   "chett",
@@ -38,10 +38,10 @@ const teams = [
   "Machiavellian",
 ];
 
-function randomMarbleTeams() {
-  // return 3 random teams from marbleTeams
+// return 3 random teams from marbleTeams
+function randomMarbleTeams(n = 3) {
   const teams = [];
-  while (teams.length < 3) {
+  while (teams.length < n) {
     const randomIndex = Math.floor(Math.random() * marbleTeams.length);
     const randomTeam = marbleTeams[randomIndex];
     if (!teams.includes(randomTeam)) {
@@ -53,9 +53,12 @@ function randomMarbleTeams() {
 }
 
 function teamsAlreadyChosen(results, teams) {
+  const n = teams.length;
   for (const [ts, i] of Object.entries(results)) {
-    if (ts[0] === teams[0] && ts[1] === teams[1] && ts[2] === teams[2]) {
-      return true;
+    for (let i = 0; i < n; i++) {
+      if (ts[i] === teams[i]) {
+        return true;
+      }
     }
   }
 
@@ -65,21 +68,32 @@ function teamsAlreadyChosen(results, teams) {
 function main() {
   const results = {};
 
-  for (const t of teams) {
-    let finished = false;
-    while (!finished) {
+  //shuffle teams randomly
+  const shuffledTeams = [];
+  while (shuffledTeams.length < teams.length) {
+    const randomIndex = Math.floor(Math.random() * teams.length);
+    const randomTeam = teams[randomIndex];
+    if (!shuffledTeams.includes(randomTeam)) {
+      shuffledTeams.push(randomTeam);
+    }
+  }
+
+  for (const t of shuffledTeams) {
+    while (!results[t]) {
       const randomTeams = randomMarbleTeams();
-      console.log("randomTeams", randomTeams);
-      finished = !teamsAlreadyChosen(results, randomTeams);
-      if (finished) {
+
+      if (teamsAlreadyChosen(results, randomTeams) === false) {
         results[t] = randomTeams;
       }
     }
   }
 
-  for (const [tm, picks] of Object.entries(results)) {
-    console.log(`${tm},${picks.join(",")}`);
-  }
+  //   for (const [tm, picks] of Object.entries(results)) {
+  //     // console.log(`${tm},${picks.join(",")}`);
+  //     console.log(tm, "\t\t\t", picks);
+  //   }
+
+  console.table(results);
 }
 
 main();
